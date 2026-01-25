@@ -11,7 +11,7 @@ export const createBankAccount = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const res = await axios.post(`${API_URL}/create`, formData);
-      return res.data.data;
+      return res.data.data; // ✅ sirf account data return karenge
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Account create failed"
@@ -19,6 +19,7 @@ export const createBankAccount = createAsyncThunk(
     }
   }
 );
+
 
 /* ============================
    GET ALL BANK ACCOUNTS
@@ -32,7 +33,7 @@ export const getBankAccounts = createAsyncThunk(
     } catch (error) {
       return rejectWithValue("Failed to fetch bank accounts");
     }
-  }
+  },
 );
 
 /* ============================
@@ -61,8 +62,9 @@ const bankAccountSlice = createSlice({
       })
       .addCase(createBankAccount.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = true;
-        state.accounts.unshift(action.payload);
+        state.success = true; // success boolean
+        state.accounts.unshift(action.payload); // payload = account object (res.data.data)
+        state.error = null;
       })
       .addCase(createBankAccount.rejected, (state, action) => {
         state.loading = false;
