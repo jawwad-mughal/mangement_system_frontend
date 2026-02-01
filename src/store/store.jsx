@@ -8,6 +8,7 @@ import stockReducer from "./slices/inventorySlice";
 import sectionReducer from "./slices/sectionSlice";
 import productReducer from "./slices/productSlice";
 import bankAccountReducer from "./slices/bankAccountSlice";
+import transactionReducer from "./slices/transactionSlice";
 
 export const store = configureStore({
      reducer: {
@@ -20,5 +21,7 @@ export const store = configureStore({
     section: sectionReducer,
     product: productReducer,
     bankAccount: bankAccountReducer,
+    transactions: transactionReducer,
+
   },
 })

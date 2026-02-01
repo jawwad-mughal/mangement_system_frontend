@@ -43,18 +43,18 @@ export default function CategoryList() {
         <table className="w-full text-sm border">
           <thead className="bg-blue-600 text-white uppercase text-xs">
             <tr>
-              <th className="p-3 border text-left">#</th>
-              <th className="p-3 border text-left">Category Name</th>
-              <th className="p-3 border text-left">Description</th>
-              <th className="p-3 border text-left">Branch Name</th>
-              <th className="p-3 border text-center">Actions</th>
+              <th className="p-1 border text-left">#</th>
+              <th className="p-1 border text-left">Category Name</th>
+              <th className="p-1 border text-left">Description</th>
+              <th className="p-1 border text-left">Branch Name</th>
+              <th className="p-1 border text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {!List ? (
               <tr>
-                <td colSpan="4" className="text-center p-4 text-gray-500">
+                <td colSpan="4" className="text-center p-2 text-gray-500">
                   No category found!
                 </td>
               </tr>

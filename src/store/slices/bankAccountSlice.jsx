@@ -3,88 +3,101 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/bankaccount";
 
-/* ============================
-   CREATE BANK ACCOUNT
-============================ */
-export const createBankAccount = createAsyncThunk(
-  "bankAccount/create",
-  async (formData, { rejectWithValue }) => {
-    try {
-      const res = await axios.post(`${API_URL}/create`, formData);
-      return res.data.data; // ✅ sirf account data return karenge
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Account create failed"
-      );
-    }
-  }
-);
-
-
-/* ============================
-   GET ALL BANK ACCOUNTS
-============================ */
+/* ================= GET ALL ================= */
 export const getBankAccounts = createAsyncThunk(
   "bankAccount/getAll",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${API_URL}`);
+      const res = await axios.get(`${API_URL}/getall`);
       return res.data.data;
-    } catch (error) {
-      return rejectWithValue("Failed to fetch bank accounts");
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
-  },
+  }
 );
 
-/* ============================
-   SLICE
-============================ */
+/* ================= CREATE ================= */
+export const createBankAccount = createAsyncThunk(
+  "bankAccount/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(`${API_URL}/create`, data);
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+/* ================= UPDATE ================= */
+export const updateBankAccount = createAsyncThunk(
+  "bankAccount/update",
+  async (data, { rejectWithValue }) => {
+    // console.log(data)
+    try {
+      const res = await axios.put(`${API_URL}/edit`, data);
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+/* ================= DELETE ================= */
+export const deleteBankAccount = createAsyncThunk(
+  "bankAccount/delete",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const res = await axios.delete(`${API_URL}/delete`, { data: { id } });
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+/* ================= SLICE ================= */
 const bankAccountSlice = createSlice({
   name: "bankAccount",
-  initialState: {
-    accounts: [],
-    loading: false,
-    error: null,
-    success: false,
-  },
-  reducers: {
-    resetStatus: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.success = false;
-    },
-  },
+  initialState: { accounts: [], loader: false, message: null },
+  reducers: { resetMessage: (state) => { state.message = null } },
   extraReducers: (builder) => {
     builder
+      /* GET */
+      .addCase(getBankAccounts.pending, (state) => { state.loader = true })
+      .addCase(getBankAccounts.fulfilled, (state, action) => { state.loader = false; state.accounts = action.payload })
+      .addCase(getBankAccounts.rejected, (state, action) => { state.loader = false; state.message = action.payload })
+
       /* CREATE */
-      .addCase(createBankAccount.pending, (state) => {
-        state.loading = true;
-      })
+      .addCase(createBankAccount.pending, (state) => { state.loader = true })
       .addCase(createBankAccount.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true; // success boolean
-        state.accounts.unshift(action.payload); // payload = account object (res.data.data)
-        state.error = null;
+        state.loader = false;
+        state.accounts.unshift(action.payload);
+        state.message = "Account created successfully";
       })
-      .addCase(createBankAccount.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      .addCase(createBankAccount.rejected, (state, action) => { state.loader = false; state.message = action.payload })
+
+      /* UPDATE */
+      .addCase(updateBankAccount.fulfilled, (state, action) => {
+        const index = state.accounts.findIndex(acc => acc._id === action.payload._id);
+        if (index !== -1) state.accounts[index] = action.payload;
+        state.message = "Account updated successfully";
       })
 
-      /* GET ALL */
-      .addCase(getBankAccounts.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getBankAccounts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.accounts = action.payload;
-      })
-      .addCase(getBankAccounts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      /* DELETE */
+      .addCase(deleteBankAccount.fulfilled, (state, action) => {
+        state.accounts = state.accounts.filter(acc => acc._id !== action.payload);
+        state.message = "Account deleted successfully";
       });
-  },
+  }
 });
 
-export const { resetStatus } = bankAccountSlice.actions;
+export const { resetMessage } = bankAccountSlice.actions;
 export default bankAccountSlice.reducer;
+
+
+
+
+
+
+

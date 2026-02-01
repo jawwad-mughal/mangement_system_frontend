@@ -62,7 +62,7 @@ useEffect(() => {
           value={form.categoryname}
           onChange={handleChange}
           placeholder="Category Name"
-          className="border p-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none"
+          className="border p-1.5 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none"
         />
 
         {/* Branch Select */}
@@ -70,7 +70,7 @@ useEffect(() => {
           name="branchCode"
           value={form.branchCode}
           onChange={handleChange}
-          className="border p-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none"
+          className="border p-1.5 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none"
           
         >
           <option value="">Select Branch</option>
@@ -88,7 +88,7 @@ useEffect(() => {
           value={form.description}
           onChange={handleChange}
           placeholder="Category Description"
-          className="border p-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none"
+          className="border p-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none"
         />
         
           <p className="text-red-700 font-medium">{message}</p>

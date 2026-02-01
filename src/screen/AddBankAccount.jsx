@@ -1,171 +1,225 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createBankAccount, getBankAccounts } from "../store/slices/bankAccountSlice";
+import { getAllBranch } from "../store/slices/branchSlice";
+import {
+  createBankAccount,
+  getBankAccounts,
+  updateBankAccount,
+  deleteBankAccount,
+  resetMessage
+} from "../store/slices/bankAccountSlice";
 
 export default function AddBankAccount() {
   const dispatch = useDispatch();
-  const { accounts, loading, error } = useSelector(state => state.bankAccount);
+  const { accounts = [], loader, message } = useSelector(state => state.bankAccount);
+  const { list: branches } = useSelector(state => state.branch);
 
+  const [editId, setEditId] = useState(null);
   const [form, setForm] = useState({
     bankName: "",
     accountNumber: "",
-    balance: "",
-    branch: "",
-    type: "Current",
     holderName: "",
+    balance: "",
+    branchCode: "",
+    type: "Current",
     openDate: new Date().toISOString().split("T")[0],
   });
 
-  // Load all accounts on mount
+  // Fetch branches & accounts
+  useEffect(() => { dispatch(getAllBranch()); }, [dispatch]);
+  useEffect(() => { dispatch(getBankAccounts()); }, [dispatch]);
+
+  // Clear messages
   useEffect(() => {
-    dispatch(getBankAccounts());
-  }, [dispatch]);
+    if (message) {
+      const t = setTimeout(() => dispatch(resetMessage()), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [message, dispatch]);
 
-  const handleSubmit = (e) => {
+  // Form change
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  // Submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.bankName || !form.accountNumber || !form.balance) return;
+    const payload = { ...form, balance: Number(form.balance) };
 
-    dispatch(createBankAccount(form));
+    if (editId) {
+      await dispatch(updateBankAccount({ ...payload, id: editId }));
+       dispatch(getBankAccounts());
+      setEditId(null);
+    } else {
+      await dispatch(createBankAccount(payload));
+    }
 
-    // Reset form after submit
     setForm({
       bankName: "",
       accountNumber: "",
-      balance: "",
-      branch: "",
-      type: "Current",
       holderName: "",
+      balance: "",
+      branchCode: "",
+      type: "Current",
       openDate: new Date().toISOString().split("T")[0],
     });
   };
 
+  // Edit account
+  const handleEdit = (acc) => {
+    setEditId(acc._id);
+    setForm({
+      bankName: acc.bankName || "",
+      accountNumber: acc.accountNumber || "",
+      holderName: acc.holderName || "",
+      balance: acc.balance || "",
+      branchCode: acc.branchRef ? acc.branchRef.branchCode : "", // Safe: show correct branch
+      type: acc.type || "Current",
+      openDate: acc.openDate ? acc.openDate.split("T")[0] : new Date().toISOString().split("T")[0],
+    });
+  };
+
+  // Delete account
+  const handleDelete = (id) => {
+     dispatch(deleteBankAccount({ id }));
+  };
+
+  // Helper: branchCode => branchName
+  const getBranchName = (code) => {
+    const b = branches.find(b => b.branchCode === code);
+    return b ? b.branchName : "-";
+  };
+
   return (
-    <div className="max-w-full mx-auto bg-white p-6 rounded-2xl shadow-md border">
-      <h2 className="text-2xl font-bold mb-4 text-blue-700">
-        Create Bank Account
+    <div className="bg-white p-6 rounded-xl shadow border">
+      <h2 className="text-2xl font-bold text-blue-700 mb-4">
+        {editId ? "Edit Bank Account" : "Create Bank Account"}
       </h2>
 
-      <form onSubmit={handleSubmit} className="mb-6">
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          {/* Bank Name */}
-          <div>
-            <label className="block text-sm text-black font-semibold mb-1">Bank Name *</label>
-            <input
-              type="text"
-              value={form.bankName}
-              onChange={e => setForm({ ...form, bankName: e.target.value })}
-              className="w-full border p-2 rounded-lg focus:outline-blue-500"
-            />
-          </div>
+      {message && <div className="mb-4 p-2 rounded bg-gray-100 border">{message}</div>}
 
-          {/* Account Number */}
-          <div>
-            <label className="block text-sm text-black font-semibold mb-1">Account Number *</label>
-            <input
-              type="text"
-              value={form.accountNumber}
-              onChange={e => setForm({ ...form, accountNumber: e.target.value })}
-              className="w-full border p-2 rounded-lg focus:outline-blue-500"
-            />
-          </div>
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <input
+          name="bankName"
+          placeholder="Bank Name"
+          className="border p-2 rounded"
+          value={form.bankName}
+          onChange={handleChange}
+          required
+        />
 
-          {/* Holder Name */}
-          <div>
-            <label className="block text-sm text-black font-semibold mb-1">Account Holder Name *</label>
-            <input
-              type="text"
-              value={form.holderName}
-              onChange={e => setForm({ ...form, holderName: e.target.value })}
-              className="w-full border p-2 rounded-lg focus:outline-blue-500"
-            />
-          </div>
+        <input
+          name="accountNumber"
+          placeholder="Account Number"
+          className="border p-2 rounded"
+          value={form.accountNumber}
+          onChange={handleChange}
+          required
+        />
 
-          {/* Balance + Type */}
-          <div className="flex gap-2">
-            <div className="w-1/2">
-              <label className="block text-sm text-black font-semibold mb-1">Opening Balance *</label>
-              <input
-                type="number"
-                value={form.balance}
-                onChange={e => setForm({ ...form, balance: e.target.value })}
-                className="w-full border p-2 rounded-lg focus:outline-blue-500"
-              />
-            </div>
+        <input
+          name="holderName"
+          placeholder="Holder Name"
+          className="border p-2 rounded"
+          value={form.holderName}
+          onChange={handleChange}
+          required
+        />
 
-            <div className="w-1/2">
-              <label className="block text-sm text-black font-semibold mb-1">Account Type *</label>
-              <select
-                value={form.type}
-                onChange={e => setForm({ ...form, type: e.target.value })}
-                className="w-full border p-2 rounded-lg focus:outline-blue-500"
-              >
-                <option>Current</option>
-                <option>Savings</option>
-                <option>Business</option>
-              </select>
-            </div>
-          </div>
+        {/* Branch select: show name, save code */}
+        <select
+          name="branchCode"
+          value={form.branchCode}
+          onChange={handleChange}
+          className="border p-2 rounded"
+          required
+        >
+          <option value="">Select Branch</option>
+          {branches.map(b => (
+            <option key={b._id} value={b.branchCode}>{b.branchName}</option>
+          ))}
+        </select>
 
-          {/* Branch */}
-          <div>
-            <label className="block text-sm text-black font-semibold mb-1">Branch Name *</label>
-            <input
-              type="text"
-              value={form.branch}
-              onChange={e => setForm({ ...form, branch: e.target.value })}
-              className="w-full border p-2 rounded-lg focus:outline-blue-500"
-            />
-          </div>
+        <input
+          name="balance"
+          type="number"
+          placeholder="Opening Balance"
+          className="border p-2 rounded"
+          value={form.balance}
+          onChange={handleChange}
+          required
+        />
 
-          {/* Open Date */}
-          <div>
-            <label className="block text-sm text-black font-semibold mb-1">Account Open Date *</label>
-            <input
-              type="date"
-              value={form.openDate}
-              onChange={e => setForm({ ...form, openDate: e.target.value })}
-              className="w-full border p-2 rounded-lg focus:outline-blue-500"
-            />
-          </div>
-        </div>
+        <select
+          name="type"
+          value={form.type}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        >
+          <option>Current</option>
+          <option>Savings</option>
+          <option>Business</option>
+        </select>
+
+        <input
+          name="openDate"
+          type="date"
+          className="border p-2 rounded"
+          value={form.openDate}
+          onChange={handleChange}
+          required
+        />
 
         <button
           type="submit"
-          className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700"
+          className="bg-blue-600 text-white rounded px-4 py-2 md:col-span-2"
         >
-          Create Account
+          {editId ? "Update Account" : "Create Account"}
         </button>
       </form>
 
-      {/* Accounts Table */}
+      {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-2 py-1">Bank Name</th>
-              <th className="border px-2 py-1">Account Number</th>
-              <th className="border px-2 py-1">Holder Name</th>
-              <th className="border px-2 py-1">Balance</th>
-              <th className="border px-2 py-1">Branch</th>
-              <th className="border px-2 py-1">Type</th>
-              <th className="border px-2 py-1">Open Date</th>
+        <table className="min-w-full border text-sm">
+          <thead className="bg-blue-600 text-white">
+            <tr>
+              <th className="border p-2">Bank</th>
+              <th className="border p-2">Account #</th>
+              <th className="border p-2">Holder</th>
+              <th className="border p-2">Branch</th>
+              <th className="border p-2">Balance</th>
+              <th className="border p-2">Type</th>
+              <th className="border p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr><td colSpan="7" className="text-center p-2">Loading...</td></tr>
+            {loader ? (
+              <tr><td colSpan="7" className="p-3 text-center">Loading...</td></tr>
             ) : accounts.length === 0 ? (
-              <tr><td colSpan="7" className="text-center p-2">No accounts</td></tr>
+              <tr><td colSpan="7" className="p-3 text-center">No Accounts</td></tr>
             ) : (
-              accounts.map((acc) => (
-                <tr key={acc._id}>
-                  <td className="border px-2 py-1">{acc.bankName}</td>
-                  <td className="border px-2 py-1">{acc.accountNumber}</td>
-                  <td className="border px-2 py-1">{acc.holderName}</td>
-                  <td className="border px-2 py-1">{acc.balance}</td>
-                  <td className="border px-2 py-1">{acc.branch}</td>
-                  <td className="border px-2 py-1">{acc.type}</td>
-                  <td className="border px-2 py-1">{acc.openDate.split("T")[0]}</td>
+              accounts.map(acc => (
+                <tr key={acc._id} className="text-center">
+                  <td className="border p-2">{acc.bankName}</td>
+                  <td className="border p-2">{acc.accountNumber}</td>
+                  <td className="border p-2">{acc.holderName}</td>
+                  <td className="border p-2">{getBranchName(acc.branchRef?.branchCode)}</td>
+                  <td className="border p-2">{acc.balance}</td>
+                  <td className="border p-2">{acc.type}</td>
+                  <td className="border p-2 space-x-2">
+                    <button
+                      className="bg-yellow-500 text-white px-2 py-1 rounded"
+                      onClick={() => handleEdit(acc)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-600 text-white px-2 py-1 rounded"
+                      onClick={() => handleDelete(acc._id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
@@ -175,4 +229,14 @@ export default function AddBankAccount() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
 

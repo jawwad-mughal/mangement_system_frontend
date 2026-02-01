@@ -68,27 +68,27 @@ export default function Dashboard() {
   return (
     <div>
       {/* Navbar */}
-      <div className="bg-blue-800 shadow px-8 py-5 flex justify-between items-center w-full ">
+      <div className="bg-blue-800 shadow px-5 py-1 flex justify-between items-center w-full ">
         <div className="flex justify-center items-center gap-2 ">
           {/* Menu Icon only mobile */}
           <MdOutlineMenu
-            className="text-[22px] sm:text-[26px] text-white cursor-pointer shrink-0 lg:hidden"
+            className="text-[22px]  text-white cursor-pointer shrink-0 lg:hidden"
             onClick={() => setHide((prev) => !prev)}
           />
-          <h1 className="text-[18px] font-bold pl-5 text-white">
+          <h1 className="text-[18px] font-bold py-[2.4px] text-white">
             Management System
           </h1>
         </div>
         <div className="flex items-center gap-2">
-          <div className="relative p-2">
-            <div className="bg-red-600 flex justify-center items-center w-[15px] h-[15px] rounded-full absolute top-1 right-1.5 ">
+          {/* <div className="relative px-2 py-1.4">
+            <div className="bg-red-600 flex justify-center items-center w-3 h-3 rounded-full absolute top-0 right-1.5 ">
               <p className="font-bold text-white text-[10px]">1</p>
             </div>
             <IoMdNotifications className="text-[20px] text-white " />
-          </div>
+          </div> */}
           <button
             onClick={() => handleLogout()}
-            className="bg-red-500 text-white px-3 py-1 text-[12px] rounded"
+            className="bg-red-500 text-white px-3 py-1 text-[10px] font-bold rounded"
           >
             Logout
           </button>
@@ -108,26 +108,26 @@ export default function Dashboard() {
         {/* Sidebar */}
         <div
           className={`
-            fixed lg:static top-[74.5px] left-0 h-screen
+            absolute lg:static top-0 left-0 h-[92.5vh]
             bg-blue-600 shadow-md
             transition-all duration-300 ease-in-out
             z-50 overflow-x-hidden
-            w-64 p-5
+            w-50 p-5
             ${hide ? "-translate-x-full lg:translate-x-0" : "translate-x-0"}
           `}
         >
           {[
-            { section: "Dashboard", url: "dashboard" },
+            // { section: "Dashboard", url: "dashboard" },
             { section: "Branch", url: "branch" },
             { section: "Inventory", url: "inventory" },
             { section: "Product", url: "product" },
             { section: "Employees", url: "employees" },
             { section: "Banking", url: "banking" },
-            { section: "Invoice", url: "invoice" },
-            { section: "Order", url: "order" },
-            { section: "Customers", url: "customer" },
-            { section: "Reports", url: "report" },
-            { section: "Settings", url: "setting" },
+            // { section: "Invoice", url: "invoice" },
+            // { section: "Order", url: "order" },
+            // { section: "Customers", url: "customer" },
+            // { section: "Reports", url: "report" },
+            // { section: "Settings", url: "setting" },
           ].map((item) => {
             if (
               url === "admin" ||
