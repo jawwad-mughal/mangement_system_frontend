@@ -6,7 +6,7 @@ export const signupAdmin = createAsyncThunk(
     async (signupAdminForm, { rejectWithValue }) => {
         try {
             const res = await axios.post(
-             "http://localhost:5000/signup",
+             "https://mangement-system-backend.vercel.app/signup",
                signupAdminForm 
             )
 

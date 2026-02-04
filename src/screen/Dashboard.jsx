@@ -88,7 +88,7 @@ export default function Dashboard() {
           </div> */}
           <button
             onClick={() => handleLogout()}
-            className="bg-red-500 text-white px-3 py-1 text-[10px] font-bold rounded"
+            className="bg-red-500 text-white px-3 py-1 text-[12px] font-bold rounded"
           >
             Logout
           </button>

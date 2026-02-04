@@ -87,7 +87,7 @@ function App() {
 
           {/* Banking */}
           <Route path="banking" element={<Banking />}>
-            {/* <Route index element={<BankAccountsTable />} /> */}
+            <Route index element={<AddBankAccount />} />
             <Route path="addbankaccount" element={<AddBankAccount />} />
             <Route path="addtransaction" element={<AddTransactionForm />} />
             <Route path="bankaccountsummary" element={<BankAccountsSummary />}/>

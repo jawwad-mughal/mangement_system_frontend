@@ -9,7 +9,7 @@ export const createProduct = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/products/create",
+        "https://mangement-system-backend.vercel.app/products/create",
         formData,
         {
           headers: {
@@ -32,7 +32,7 @@ export const editProduct = createAsyncThunk(
     
     try {
       const response = await axios.put(
-        `http://localhost:5000/products/update/${id}`,
+        `https://mangement-system-backend.vercel.app/products/update/${id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -51,7 +51,7 @@ export const fetchProducts = createAsyncThunk(
   "product/fetchProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:5000/products", {
+      const response = await axios.get("https://mangement-system-backend.vercel.app/products", {
         withCredentials: true, // 👈 ye ensure karega cookies sath bheji jaaye
       });
       return response.data;
@@ -67,7 +67,7 @@ export const deleteProduct = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/products/delete/${id}`,
+        `https://mangement-system-backend.vercel.app/products/delete/${id}`,
         { withCredentials: true }
       );
       return { message: response.data.message, id };

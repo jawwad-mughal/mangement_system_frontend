@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const Url = "http://localhost:5000"; // correct backend URL
+const Url = "https://mangement-system-backend.vercel.app"; // correct backend URL
 
 // create Branch in database
 export const createBranch = createAsyncThunk(

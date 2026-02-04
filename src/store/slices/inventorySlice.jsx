@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const url = "http://localhost:5000";
+const url = "https://mangement-system-backend.vercel.app";
 
 // ======================= GET ALL STOCK =======================
 export const getAllStock = createAsyncThunk(

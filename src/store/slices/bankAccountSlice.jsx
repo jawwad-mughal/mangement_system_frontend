@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/bankaccount";
+const API_URL = "https://mangement-system-backend.vercel.app/api/bankaccount";
 
 /* ================= GET ALL ================= */
 export const getBankAccounts = createAsyncThunk(

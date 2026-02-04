@@ -10,7 +10,7 @@ export const checkSectionAccess = createAsyncThunk(
     
     try {
       const res = await axios.post(
-        `http://localhost:5000/checkSection`,
+        `https://mangement-system-backend.vercel.app/checkSection`,
         {section},
         { withCredentials: true }
       );
