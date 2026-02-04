@@ -29,7 +29,7 @@ export default function ResetPasswordForm() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5000/reset-password",
+        "https://mangement-system-backend.vercel.app/reset-password",
         {
           email,
           newPassword,
