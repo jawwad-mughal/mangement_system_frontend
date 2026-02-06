@@ -8,7 +8,7 @@ const PublicWrapper = () => {
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await axios.post("https://mangement-system-backend.vercel.app/verifyToken",{}, {
+        const res = await axios.get("https://mangement-system-backend.vercel.app/verifyToken",{}, {
           withCredentials: true,
         });
 // console.log(res.data.valid)

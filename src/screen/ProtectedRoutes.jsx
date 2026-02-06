@@ -9,7 +9,7 @@ const ProtectedRoutes = () => {
     const verifyUser = async () => {
       try {
         // Backend middleware automatically refresh token if needed
-        const res = await axios.post(
+        const res = await axios.get(
           "https://mangement-system-backend.vercel.app/verifyToken",
           {},
           {
