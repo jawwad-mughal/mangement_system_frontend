@@ -8,10 +8,10 @@ const PublicWrapper = () => {
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await axios.post("http://localhost:5000/verifyToken",{}, {
+        const res = await axios.post("https://mangement-system-backend.vercel.app/verifyToken",{}, {
           withCredentials: true,
         });
-console.log(res.data.valid)
+// console.log(res.data.valid)
         setAuth(res.data.valid);
       } catch {
         // Token invalid or refresh failed

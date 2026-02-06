@@ -10,7 +10,7 @@ const ProtectedRoutes = () => {
       try {
         // Backend middleware automatically refresh token if needed
         const res = await axios.post(
-          "http://localhost:5000/verifyToken",
+          "https://mangement-system-backend.vercel.app/verifyToken",
           {},
           {
             withCredentials: true,
