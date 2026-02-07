@@ -6,7 +6,7 @@ export const loginUser = createAsyncThunk(
   async (loginFormData, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "https://mangement-system-backend.vercel.app/login",
+        "https://mangement-system-backend.vercel.app/api/login",
         loginFormData,
         {
           withCredentials: true,
