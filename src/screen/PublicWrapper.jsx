@@ -1,33 +1,35 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router-dom";
 
 const PublicWrapper = () => {
-  const [auth, setAuth] = useState(null);
+  const [auth, setAuth] = useState(null); // null = loading
 
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await axios.get("https://mangement-system-backend.vercel.app/verifyToken",{}, {
-          withCredentials: true,
-        });
-// console.log(res.data.valid)
+        const res = await axios.get(
+          "https://mangement-system-backend.vercel.app/verifyToken",
+          { withCredentials: true } // ✅ send cookies
+        );
         setAuth(res.data.valid);
       } catch {
-        // Token invalid or refresh failed
-        setAuth(false);
+        setAuth(false); // token invalid
       }
     };
 
     check();
   }, []);
 
-  if (auth === null) return <Navigate to="/login" replace />;
+  // Loading state → wait
+  if (auth === null) return <div>Loading...</div>;
 
+  // If authenticated, redirect to main page
   return auth ? <Navigate to="/" replace /> : <Outlet />;
 };
 
 export default PublicWrapper;
+
 
 
 
