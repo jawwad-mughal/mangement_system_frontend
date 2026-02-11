@@ -20,7 +20,7 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/logout",
+        "https://mangement-system-backend.vercel.app/logout",
         {},
         { withCredentials: true }
       );
